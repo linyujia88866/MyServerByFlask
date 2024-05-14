@@ -55,6 +55,20 @@ def index():
 
 
 # 使用数据库连接
+@app.route('/all_cate')
+def all_cate():
+    db = get_db_connection()
+    cursor = db.cursor()
+    cursor.execute('SELECT DISTINCT  category FROM notes')
+    results = cursor.fetchall()
+
+    cursor.close()
+    db.close()
+
+    return jsonify({"message": 'Query categories successfully!', "categories": f'{results}'}), 200
+
+
+# 使用数据库连接
 @app.route('/note_content/<title>')
 def index2(title):
     db = get_db_connection()
