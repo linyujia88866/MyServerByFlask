@@ -116,11 +116,51 @@ def insert_data():
     cursor = db.cursor()
     # cursor.execute("INSERT INTO notes (title, content, category, created_time) VALUES (%s, %s, %s, %s)", ("John",
     # "john@example.com", "默认", "2024-05-12"))
+
     cursor.execute("INSERT INTO notes (title, content, category, created_time) VALUES (%s, %s, %s, %s)",
                    (title, content, category, formatted_time))
     db.commit()
     # return 'Data inserted successfully!'
     return jsonify({"message": 'Data inserted successfully!'}), 200
+
+
+@app.route('/update', methods=['POST'])
+def update_data():
+    try:
+        title = request.form['title']
+    except KeyError:
+        return jsonify({"error": "Param {title} is missing"}), 400
+
+    try:
+        content = request.form['content']
+    except KeyError:
+        return jsonify({"error": "Param {content} is missing"}), 400
+    if request.form.get('category'):
+        category = request.form['category']
+    else:
+        category = "默认分类"
+
+    from datetime import datetime
+
+    # 获取当前时间
+    now = datetime.now()
+
+    # 设置指定的年月日时分秒
+    specified_time = datetime(2025, 5, 12, 22, 0, 0)
+
+    # 格式化时间戳
+    formatted_time = now.strftime('%Y-%m-%d %H:%M:%S')
+
+    db = get_db_connection()
+    cursor = db.cursor()
+    # cursor.execute("INSERT INTO notes (title, content, category, created_time) VALUES (%s, %s, %s, %s)", ("John",
+    # "john@example.com", "默认", "2024-05-12"))
+    x = f"UPDATE notes SET content = '{content}', category = '{category}' WHERE title = '{title}'"
+    print(x)
+    cursor.execute(x)
+    db.commit()
+    # return 'Data inserted successfully!'
+    return jsonify({"message": 'Data updated successfully!'}), 200
 
 
 if __name__ == '__main__':
